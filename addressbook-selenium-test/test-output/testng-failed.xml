@@ -15,6 +15,26 @@
           <include name="testNonEmptyContactCreated"/>
         </methods>
       </class> <!-- com.example.tests.ContactCreationTests -->
+      <class name="com.example.tests.GroupRemovalTests">
+        <methods>
+          <include name="deleteSomeGroup"/>
+        </methods>
+      </class> <!-- com.example.tests.GroupRemovalTests -->
+      <class name="com.example.tests.ContactModificationTests">
+        <methods>
+          <include name="modifyContact"/>
+        </methods>
+      </class> <!-- com.example.tests.ContactModificationTests -->
+      <class name="com.example.tests.GroupModificationTests">
+        <methods>
+          <include name="modifySomeGroup"/>
+        </methods>
+      </class> <!-- com.example.tests.GroupModificationTests -->
+      <class name="com.example.tests.ContactRemovalTests">
+        <methods>
+          <include name="deleteContact"/>
+        </methods>
+      </class> <!-- com.example.tests.ContactRemovalTests -->
     </classes>
   </test> <!-- Default test(failed) -->
 </suite> <!-- Failed suite [Default suite] -->
