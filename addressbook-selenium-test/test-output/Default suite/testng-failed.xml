@@ -9,12 +9,12 @@
           <include name="tearDown"/>
         </methods>
       </class> <!-- com.example.tests.GroupCreationTests -->
-      <class name="com.example.tests.AlsoGroupCreationTests">
+      <class name="com.example.tests.ContactCreationTests">
         <methods>
-          <include name="testEmptyGroupCreation"/>
-          <include name="testNonEmptyGroupCreation"/>
+          <include name="testEmptyContactCreated"/>
+          <include name="testNonEmptyContactCreated"/>
         </methods>
-      </class> <!-- com.example.tests.AlsoGroupCreationTests -->
+      </class> <!-- com.example.tests.ContactCreationTests -->
     </classes>
   </test> <!-- Default test(failed) -->
 </suite> <!-- Failed suite [Default suite] -->
