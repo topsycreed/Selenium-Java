@@ -1,30 +1,29 @@
 package com.example.tests;
 
-public class GroupData implements Comparable <GroupData>{
-	public String name;
+public class GroupData implements Comparable<GroupData> {
+	public String groupName;
 	public String header;
 	public String footer;
 
-	public GroupData() {
-	}
-	
-	public GroupData(String groupname, String header, String footer) {
-		this.name = groupname;
+	public GroupData(String groupName, String header, String footer) {
+		this.groupName = groupName;
 		this.header = header;
 		this.footer = footer;
 	}
 	
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		return result;
+	public GroupData() {
 	}
 
 	@Override
 	public String toString() {
-		return "GroupData [name=" + name + ", header=" + header + ", footer="
-				+ footer + "]";
+		return "GroupData [groupName=" + groupName + ", header=" + header
+				+ ", footer=" + footer + "]";
+	}
+
+	@Override
+	public int hashCode() {
+	int result = 1;
+	return result;
 	}
 
 	@Override
@@ -36,17 +35,16 @@ public class GroupData implements Comparable <GroupData>{
 		if (getClass() != obj.getClass())
 			return false;
 		GroupData other = (GroupData) obj;
-		if (name == null) {
-			if (other.name != null)
+		if (groupName == null) {
+			if (other.groupName != null)
 				return false;
-		} else if (!name.equals(other.name))
+		} else if (!groupName.equals(other.groupName))
 			return false;
 		return true;
 	}
 
 	@Override
 	public int compareTo(GroupData other) {
-		
-		return this.name.toLowerCase().compareTo(other.name.toLowerCase());
+		return this.groupName.toLowerCase().compareTo(other.groupName.toLowerCase());
 	}
 }

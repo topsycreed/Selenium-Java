@@ -8,34 +8,29 @@ import java.util.Random;
 
 import org.testng.annotations.Test;
 
-public class GroupModificationTests extends TestBase{
-	
-	@Test(dataProvider="randomValidGroupGenerator")
-	public void modifySomeGroup(GroupData group) {
-		app.getNavagationHelper().openMainPage();
-		app.getNavagationHelper().gotoGroupsPage();
-		
-	    // save old
-	    List<GroupData> oldList=app.getGroupHelper().getGrous();
-	     
-	    Random rnd =new Random();
-	    int index=rnd.nextInt(oldList.size()-1);
-	     
+public class GroupModificationTests extends TestBase {
+
+	@Test(dataProvider = "randomValidGroupGenerator")
+	public void modifySomeGroup(GroupData group)throws Exception
+	{
+		app.getNavigationHelper().openMainPage();
+	    app.getNavigationHelper().goToGroupPage();
+	    //save old state
+	    List<GroupData> oldList = app.getGroupHelper().getGroups();
+	    Random rnd = new Random(); 
+	    int index = rnd.nextInt(oldList.size()-1);
 	    //actions
-		app.getGroupHelper().initGroupModification(index);
-		/*GroupData group = new GroupData();
-		group.name = "new name";*/
+	    app.getGroupHelper().initGroupModification(index+1);
 		app.getGroupHelper().fillGroupForm(group);
 		app.getGroupHelper().submitGroupModification();
-		app.getGroupHelper().returnToGroupsPage();
-		
-	    // save new
-	    List<GroupData> newList=app.getGroupHelper().getGrous(); 
-	    
-	    //compare
+		app.getGroupHelper().returnToGroupPage();
+		 // save new state
+	    List<GroupData> newList = app.getGroupHelper().getGroups();
+	    //merge states
 	    oldList.remove(index);
 	    oldList.add(group);
-	    Collections.sort(oldList);
-	    assertEquals(newList,oldList);
+	    Collections.sort(oldList); //
+	    Collections.sort(newList);//
+	    assertEquals(newList,oldList); 
 	}
 }

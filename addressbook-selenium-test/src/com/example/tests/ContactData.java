@@ -1,40 +1,72 @@
 package com.example.tests;
 
-public class ContactData {
-	public String firstname;
-	public String lastname;
-	public String address;
-	public String home;
-	public String mobile;
-	public String work;
-	public String email;
-	public String email2;
-	public String bday;
-	public String bmonth;
-	public String byear;
-	public String address2;
-	public String home2;
+public class ContactData implements Comparable<ContactData> {
+	public String firstName;
+	public String secondName;
+	public String postAddress;
+	public String homePhoneNum;
+	public String mobilePhonNum;
+	public String workPhoneNum;
+	public String postPrimary;
+	public String postSecondary;
+	public String day;
+	public String month;
+	public String year;
+	public String secondaryPostAddress;
+	public String secondaryPhone;
+	public String group;
 
-	public ContactData() {
-		
+	public ContactData(String firstName, String secondName, String postAddress,
+			String homePhoneNum, String mobilePhonNum, String workPhoneNum,
+			String postPrimary, String postSecondary, String day, String month,
+			String year, String group, String secondaryPostAddress, String secondaryPhone) {
+		this.firstName = firstName;
+		this.secondName = secondName;
+		this.postAddress = postAddress;
+		this.homePhoneNum = homePhoneNum;
+		this.mobilePhonNum = mobilePhonNum;
+		this.workPhoneNum = workPhoneNum;
+		this.postPrimary = postPrimary;
+		this.postSecondary = postSecondary;
+		this.day = day;
+		this.month = month;
+		this.year = year;
+		this.group = group;
+		this.secondaryPostAddress = secondaryPostAddress;
+		this.secondaryPhone = secondaryPhone;
 	}
 	
-	public ContactData(String firstname, String lastname, String address,
-			String home, String mobile, String work, String email,
-			String email2, String bday, String bmonth, String byear,
-			String address2, String home2) {
-		this.firstname = firstname;
-		this.lastname = lastname;
-		this.address = address;
-		this.home = home;
-		this.mobile = mobile;
-		this.work = work;
-		this.email = email;
-		this.email2 = email2;
-		this.bday = bday;
-		this.bmonth = bmonth;
-		this.byear = byear;
-		this.address2 = address2;
-		this.home2 = home2;
+	public ContactData() {
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((secondName == null) ? 0 : secondName.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		ContactData other = (ContactData) obj;
+		if (secondName == null) {
+			if (other.secondName != null)
+				return false;
+		} else if (!secondName.equals(other.secondName))
+			return false;
+		return true;
+	}
+
+	@Override
+	public int compareTo(ContactData other) {
+		return this.secondName.toLowerCase().compareTo(other.secondName.toLowerCase());
 	}
 }

@@ -8,21 +8,25 @@ import java.util.Random;
 
 import org.testng.annotations.Test;
 
-public class ContactRemovalTests extends TestBase {
+public class ContactModificationsTests extends TestBase{
 	
-	  @Test
-	  public void testContactRemoval() throws Exception {
+	  @Test(dataProvider = "randomValidContactGenerator")
+	  public void testContactModifications(ContactData contact) throws Exception {
 		app.getNavigationHelper().openMainPage();
 		List<ContactData> oldList = app.getContactHelper().getContacts();
 		Random rnd = new Random();
 		int index = rnd.nextInt(oldList.size() - 1); 
 		app.getContactHelper().openEditPage(index);
-		app.getContactHelper().deleteContactCreation();
+		app.getContactHelper().fillContactDetails(contact);
+		app.getContactHelper().updateContactCreation();
 		app.getContactHelper().returnToMainPage();
-		List<ContactData> newList = app.getContactHelper().getContacts();
+		 // save new state
+	    List<ContactData> newList = app.getContactHelper().getContacts();
 	    //merge states
 	    oldList.remove(index);
-	    Collections.sort(oldList);
-	    assertEquals(oldList,newList);
+	    oldList.add(contact);
+	    Collections.sort(oldList); //
+	    //Collections.sort(newList);//
+	    assertEquals(newList,oldList); 
 	  }
 }
