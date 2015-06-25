@@ -2,6 +2,8 @@ package com.example.fw;
 
 import java.util.List;
 
+import java.util.concurrent.TimeUnit;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
@@ -15,7 +17,9 @@ public class ContactHelper extends HelperBase {
 	
 	public ContactHelper(ApplicationManager manager) {
 		super(manager);
+		
 	}
+   
 
 	private SortedListOf<ContactData> cachedContacts; 
 	
@@ -29,7 +33,6 @@ public class ContactHelper extends HelperBase {
 	
 	
 		private void rebuildCache_old() {
-
 			cachedContacts=new SortedListOf<ContactData>();	
 			manager.navigateTo().mainPage();
 			List<WebElement> checkboxes=driver.findElements(By.name("selected[]"));
@@ -40,6 +43,7 @@ public class ContactHelper extends HelperBase {
 				title=title.substring("Select (".length(),title.length()-")".length());
 				String f_name=title.substring(0,title.lastIndexOf(" "));
 				String l_name=title.substring(title.lastIndexOf(" ")+1);
+			
 				cachedContacts.add(new ContactData().withFirstName(f_name).withLastName(l_name).withId(id));
 			}
 	}
@@ -51,6 +55,7 @@ public class ContactHelper extends HelperBase {
 		List<WebElement> checkboxes=driver.findElements(By.name("entry"));
 		for(WebElement checkbox: checkboxes)
 		{
+			
 			String id=checkbox.findElement(By.name("selected[]")).getAttribute("value");
 			String f_name=checkbox.findElement(By.xpath(".//td[3]")).getText();
 			String l_name=checkbox.findElement(By.xpath(".//td[2]")).getText();
@@ -65,11 +70,9 @@ public class ContactHelper extends HelperBase {
 	    gotoHomePage(); 
 	    rebuildCache();
 	    return this;
+		
 	}
-	
-	
-	
-	
+
 public  ContactHelper deleteContact(int index) {
 		
 	    selectContactById(index, cachedContacts); 
@@ -77,17 +80,16 @@ public  ContactHelper deleteContact(int index) {
 		gotoHomePage();
 	    rebuildCache();
 		return this;
-		
 	}
 
-    public ContactHelper modifySomeContact(int index, ContactData contacts){
-    	initContactModification(index) ;  
-    	fillContactForm(contacts,MODIFICATION);
-    	submitContactModification();
-    	gotoHomePage();
-    	rebuildCache();
-    	return this;
-    }
+public ContactHelper modifySomeContact(int index, ContactData contacts){
+	initContactModification(index) ;  
+	fillContactForm(contacts,MODIFICATION);
+	submitContactModification();
+	gotoHomePage();
+	 rebuildCache();
+	return this;
+}
 	
 	public ContactHelper initContactCeation() {
 		click(By.linkText("add new"));
@@ -107,7 +109,10 @@ public  ContactHelper deleteContact(int index) {
 		  
 	  }
 	  else {
-		  if (driver.findElements(By.name("new_group" )).size()!=0)
+		  driver.manage().timeouts().implicitlyWait(0, TimeUnit.SECONDS);
+	      boolean result = driver.findElements(By.name("new_group" )).size() > 0;
+	      driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
+	      if (result)
 			  throw new Error ("Group selector exists in contact modification form");
 	  }
 	  
@@ -126,28 +131,31 @@ public  ContactHelper deleteContact(int index) {
 	}
 
 	private ContactHelper selectContactById(int index, SortedListOf<ContactData> cachedContacts) {
+		
+		
 		String id =cachedContacts.get(index).getId();
 		List<WebElement> checkboxes=driver.findElements(By.name("selected[]"));
 	   
 		for (int i=0; i<checkboxes.size();i++)
-		{
+		{	   
 			String idFromList =checkboxes.get(i).getAttribute("value");
 			 if ( idFromList.equals(id)) {
 	     	 click(By.xpath(".//tr["+(i+2)+"]/td[7]/a/img"));
-			 return this;
-	    	 }
-	     }
-		 throw new Error( "There is no such id");	
+			 return this; 	    		
+	    	  }	    		 
+	    	  
+	      }	    
+		 throw new Error( "There is no such id");
 		}
 
-	private ContactHelper selectContactByIndex(int index) {
+	private ContactHelper selectContactByIndex(int index) {		
 		index++;
 		click(By.xpath("//tr["+(index+1)+"]/td[7]/a/img"));
 		return this;
 	}
 
 	public ContactHelper initContactModification(int index) {
-		selectContactById(index, cachedContacts); 
+		selectContactByIndex(index);
 		return this;
 	}
 
