@@ -1,96 +1,164 @@
 package com.example.fw;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang3.RandomStringUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
 import com.example.tests.ContactData;
-public class ContactHelper  extends HelperBase{
+import com.example.utils.SortedListOf;
 
+public class ContactHelper extends HelperBase {
+
+	public static boolean CREATION=true;
+	public static boolean MODIFICATION =false; 
+	
 	public ContactHelper(ApplicationManager manager) {
 		super(manager);
 	}
 
-	public void goToNewContactPage() {
-		click(By.linkText("add new"));
-	}
+	private SortedListOf<ContactData> cachedContacts; 
 	
-	public void returnToMainPage() {
-		click(By.linkText("home page"));
-	}
-	
-	public void submitContactCreation() {
-		 click(By.name("submit"));
-	}
-	
-	public void updateContactCreation() {
-		 click(By.xpath("//*[@id='content']/form[1]/input[11]"));
-	}
-	
-	public void deleteContactCreation() {
-		 click(By.xpath("//*[@id='content']/form[2]/input[2]"));
-	}
-	
-
-	public String phoneRandomizer() {
-		  String charset = ("123456789");
-		  String phoneN = RandomStringUtils.random(7,charset);
-		  phoneN = "+7000"+phoneN;
-		  return phoneN;	  
-	 }
-
-	public String emailRandomizer() {
-		   String charset = ("abcdefghijklmopqrstuvwxyz");
-		   String emailN = RandomStringUtils.random(7,charset);
-		  emailN = emailN +"@blabla.bl";
-		  return emailN;	  
-	 }
-
-	public String NameRandomizer() {
-		   String charset = ("abcdefghijklmopqrstuvwxyz");
-		   String name = RandomStringUtils.random(7,charset);
-		   return name;	  
-	 }
-
-	public void fillContactDetails(ContactData contact) {
-		type(By.name("firstname"), contact.firstName);
-		type(By.name("lastname"), contact.secondName);
-		type(By.name("address"), contact.postAddress);
-		type(By.name("home"), contact.homePhoneNum);
-		type(By.name("mobile"), contact.mobilePhonNum);
-		type(By.name("work"), contact.workPhoneNum);
-		type(By.name("email"), contact.postPrimary);
-		type(By.name("email2"), contact.postSecondary);
-		type(By.name("address2"), contact.secondaryPostAddress);
-		type(By.name("phone2"), contact.secondaryPhone);
-		type(By.name("byear"), contact.year);
+	public SortedListOf<ContactData> getContacts() {
 		
-	    selectByText(By.name("bday"), contact.day);
-	    selectByText(By.name("bmonth"), contact.month);
-	    selectByText(By.name("new_group"), contact.group);
+		if (cachedContacts==null){
+			rebuildCache();
+		}
+		return cachedContacts; 
+	}	
+	
+	
+		private void rebuildCache_old() {
+
+			cachedContacts=new SortedListOf<ContactData>();	
+			manager.navigateTo().mainPage();
+			List<WebElement> checkboxes=driver.findElements(By.name("selected[]"));
+			for(WebElement checkbox: checkboxes)
+			{
+				String title= checkbox.getAttribute("title");
+				String id = checkbox.getAttribute("value");
+				title=title.substring("Select (".length(),title.length()-")".length());
+				String f_name=title.substring(0,title.lastIndexOf(" "));
+				String l_name=title.substring(title.lastIndexOf(" ")+1);
+				cachedContacts.add(new ContactData().withFirstName(f_name).withLastName(l_name).withId(id));
+			}
+	}
+		
+
+	private void rebuildCache() {
+		cachedContacts=new SortedListOf<ContactData>();	
+		manager.navigateTo().mainPage();
+		List<WebElement> checkboxes=driver.findElements(By.name("entry"));
+		for(WebElement checkbox: checkboxes)
+		{
+			String id=checkbox.findElement(By.name("selected[]")).getAttribute("value");
+			String f_name=checkbox.findElement(By.xpath(".//td[3]")).getText();
+			String l_name=checkbox.findElement(By.xpath(".//td[2]")).getText();
+			cachedContacts.add(new ContactData().withFirstName(f_name).withLastName(l_name).withId(id));
+		}
+	}
+
+	public ContactHelper createContacts(ContactData contacts) {
+		manager.navigateTo().contactPage();
+		fillContactForm(contacts,CREATION);
+	    submitContact();
+	    gotoHomePage(); 
+	    rebuildCache();
+	    return this;
 	}
 	
-	public void openEditPage(int index)
-	{
-		int count = clicks(By.xpath("//input[@type='checkbox']"));
-		if (count != 0 && index <= count){
-			index = index+2;
-		click(By.xpath("//*[@id='maintable']/tbody/tr["+index+"]/td[7]/a/img"));
+	
+	
+	
+public  ContactHelper deleteContact(int index) {
+		
+	    selectContactById(index, cachedContacts); 
+		submitContactDeletion();
+		gotoHomePage();
+	    rebuildCache();
+		return this;
+		
+	}
+
+    public ContactHelper modifySomeContact(int index, ContactData contacts){
+    	initContactModification(index) ;  
+    	fillContactForm(contacts,MODIFICATION);
+    	submitContactModification();
+    	gotoHomePage();
+    	rebuildCache();
+    	return this;
+    }
+	
+	public ContactHelper initContactCeation() {
+		click(By.linkText("add new"));
+		return this;
+	}
+
+	public ContactHelper fillContactForm( ContactData contacts,boolean formType) {
+		type(By.name("firstname"), contacts.getF_name());
+	    type(By.name("lastname"), contacts.getL_name());  
+	    type(By.name("address"), contacts.getAddr());
+	    type(By.name("home"), contacts.getPhone());
+	    type(By.name("email"), contacts.getE_mail());	
+	    selectByText(By.name("bday"), contacts.getB_day());
+	    selectByText(By.name("bmonth"), contacts.getB_month());
+	    type(By.name("byear"), contacts.getB_year());
+	  if (formType==CREATION){
+		  
+	  }
+	  else {
+		  if (driver.findElements(By.name("new_group" )).size()!=0)
+			  throw new Error ("Group selector exists in contact modification form");
+	  }
+	  
+	  return this;
+	} 
+
+	
+	public ContactHelper submitContact() {
+		click(By.name("submit"));
+		return this;
+	}
+
+	public ContactHelper gotoHomePage() {
+		click(By.linkText("home"));
+		return this;
+	}
+
+	private ContactHelper selectContactById(int index, SortedListOf<ContactData> cachedContacts) {
+		String id =cachedContacts.get(index).getId();
+		List<WebElement> checkboxes=driver.findElements(By.name("selected[]"));
+	   
+		for (int i=0; i<checkboxes.size();i++)
+		{
+			String idFromList =checkboxes.get(i).getAttribute("value");
+			 if ( idFromList.equals(id)) {
+	     	 click(By.xpath(".//tr["+(i+2)+"]/td[7]/a/img"));
+			 return this;
+	    	 }
+	     }
+		 throw new Error( "There is no such id");	
 		}
 
+	private ContactHelper selectContactByIndex(int index) {
+		index++;
+		click(By.xpath("//tr["+(index+1)+"]/td[7]/a/img"));
+		return this;
 	}
 
-	public List<ContactData> getContacts() {
-				List<ContactData> contacts = new ArrayList<ContactData>();
-		List<WebElement> secondNames = driver.findElements(By.xpath("//tr[@name='entry']/td[2]"));
-		for (WebElement secondName : secondNames) {
-		 ContactData contact = new ContactData();
-		 contact.secondName = secondName.getText();
-		 contacts.add(contact);
-		}		
-		return contacts;
+	public ContactHelper initContactModification(int index) {
+		selectContactById(index, cachedContacts); 
+		return this;
+	}
+
+	public ContactHelper submitContactModification()  {
+		click(By.xpath("//input[@value='Update']"));
+		cachedContacts=null;
+		return this;
+	}
+
+	private void submitContactDeletion() {
+		click(By.xpath("//input[@value='Delete']"));
+		cachedContacts=null;
 	}
 }

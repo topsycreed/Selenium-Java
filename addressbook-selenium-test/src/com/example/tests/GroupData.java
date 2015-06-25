@@ -1,29 +1,32 @@
 package com.example.tests;
 
-public class GroupData implements Comparable<GroupData> {
-	public String groupName;
-	public String header;
-	public String footer;
+public class GroupData implements Comparable <GroupData>{
+	private String name;
+	private String header;
+	private String footer;
 
-	public GroupData(String groupName, String header, String footer) {
-		this.groupName = groupName;
+	public GroupData() {
+		
+	}
+
+	public GroupData(String groupname, String header, String footer) {
+		this.name = groupname;
 		this.header = header;
 		this.footer = footer;
-	}
-	
-	public GroupData() {
-	}
-
-	@Override
-	public String toString() {
-		return "GroupData [groupName=" + groupName + ", header=" + header
-				+ ", footer=" + footer + "]";
+		
+			
 	}
 
 	@Override
 	public int hashCode() {
-	int result = 1;
-	return result;
+		int result = 1;
+		return result;
+	}
+
+	@Override
+	public String toString() {
+		return "GroupData [name=" + name + ", header=" + header + ", footer="
+				+ footer + "]";
 	}
 
 	@Override
@@ -35,16 +38,44 @@ public class GroupData implements Comparable<GroupData> {
 		if (getClass() != obj.getClass())
 			return false;
 		GroupData other = (GroupData) obj;
-		if (groupName == null) {
-			if (other.groupName != null)
+		if (name == null) {
+			if (other.name != null)
 				return false;
-		} else if (!groupName.equals(other.groupName))
+		} else if (!name.equals(other.name))
 			return false;
 		return true;
 	}
 
 	@Override
 	public int compareTo(GroupData other) {
-		return this.groupName.toLowerCase().compareTo(other.groupName.toLowerCase());
+		
+		return this.name.toLowerCase().compareTo(other.name.toLowerCase());
+	}
+
+	public GroupData withName(String name) {
+		this.name = name;
+		return this;
+	}
+
+	public GroupData withFooter(String footer) {
+		this.footer= footer;
+		return this;
+	}
+
+	public GroupData withHeader(String header) {
+		this.header= header;
+		return this;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public String getHeader() {
+		return header;
+	}
+
+	public String getFooter() {
+		return footer;
 	}
 }

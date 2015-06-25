@@ -1,5 +1,6 @@
 package com.example.tests;
-
+import static org.hamcrest.Matchers.equalTo;
+import static org.junit.Assert.assertThat;
 import static org.testng.Assert.assertEquals;
 
 import java.util.Collections;
@@ -8,21 +9,21 @@ import java.util.Random;
 
 import org.testng.annotations.Test;
 
+import com.example.utils.SortedListOf;
+
+
 public class ContactRemovalTests extends TestBase {
-	
-	  @Test
-	  public void testContactRemoval() throws Exception {
-		app.getNavigationHelper().openMainPage();
-		List<ContactData> oldList = app.getContactHelper().getContacts();
-		Random rnd = new Random();
-		int index = rnd.nextInt(oldList.size() - 1); 
-		app.getContactHelper().openEditPage(index);
-		app.getContactHelper().deleteContactCreation();
-		app.getContactHelper().returnToMainPage();
-		List<ContactData> newList = app.getContactHelper().getContacts();
-	    //merge states
-	    oldList.remove(index);
-	    Collections.sort(oldList);
-	    assertEquals(oldList,newList);
-	  }
-}
+
+	@Test
+	public void deleteContact(){
+		 // save old
+		 SortedListOf<ContactData> oldList=app.getContactHelper().getContacts();
+		 Random rnd =new Random();
+		 int index= rnd.nextInt(oldList.size()-1);
+		 app.getContactHelper().deleteContact(index);
+		 // save new
+		 SortedListOf<ContactData> newList=app.getContactHelper().getContacts(); 
+		 //compare
+		 assertThat(newList,equalTo(oldList.without(index)));
+		 }
+	}

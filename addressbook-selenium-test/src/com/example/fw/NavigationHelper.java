@@ -1,23 +1,47 @@
 package com.example.fw;
 
-import java.util.List;
-
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebElement;
 
 public class NavigationHelper extends HelperBase {
 
 	public NavigationHelper(ApplicationManager manager) {
 		super(manager);
+
 	}
 
-	public void openMainPage() {
-	   driver.get(manager.baseUrl + "/addressbookv4.1.4");
-		List<WebElement> lastNames = driver.findElements(By.xpath(".//*[@id='maintable']/tbody/tr/td[2]"));
-		System.out.println(lastNames);
+	public void mainPage() {
+		if(!onMainPage())
+		click(By.linkText("home"));
 	}
 
-	public void goToGroupPage() {
+	private boolean onMainPage() {
+	return	driver.findElements(By.id("maintable")).size()>0;
+	}
+
+	public void groupsPage() {
+		if(!onGroupsPage()) 				
 		click(By.linkText("groups"));
+	}
+
+	private boolean onGroupsPage() {
+	if (driver.getCurrentUrl().contains("/group.php") &&
+			driver.findElements(By.name("new")).size()>0){
+		return true;
+	}  else 		
+			return false;
+	}
+
+
+	public void contactPage() {
+		if(!onContactPage()) 				
+		click(By.linkText("add new"));
+	}
+
+	private boolean onContactPage() {
+	if (driver.getCurrentUrl().contains("/edit.php") &&
+			driver.findElements(By.name("submit")).size()>0){
+		return true;
+	}  else 		
+			return false;
 	}
 }

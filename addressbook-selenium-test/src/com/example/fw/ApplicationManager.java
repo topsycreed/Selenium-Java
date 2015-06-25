@@ -8,37 +8,50 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 public class ApplicationManager {
 	public  WebDriver driver;
 	public  String baseUrl;
-	private NavigationHelper navigationHelper;
-	private GroupHelper groupHelper;	
-	private ContactHelper contactHelper;	
-	
+
+	private NavigationHelper navigatonHelper;
+	private GroupHelper groupHelper;
+	private ContactHelper contactHelper;
+
 	public ApplicationManager() {
-	driver = new FirefoxDriver();
-	baseUrl = "http://localhost/";
-	driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
-	}
-
-	public void stop() {
-	    driver.quit();
-
-	}
-	public NavigationHelper getNavigationHelper(){
-		if (navigationHelper == null){
-			navigationHelper = new NavigationHelper(this);
-			}
-		return navigationHelper;
+		driver = new FirefoxDriver();
+	    baseUrl = "http://localhost";
+	    driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
+	    driver.get(baseUrl + "/addressbookv4.1.4/");
 	}
 	
-	public GroupHelper getGroupHelper(){
-		if (groupHelper == null){
-			groupHelper = new GroupHelper(this);
-			}
-		return groupHelper;
+	
+	public void stop() {
+		driver.quit();
+
 	}
+
+	public NavigationHelper navigateTo(){
+		
+		if (navigatonHelper==null)
+		{
+			navigatonHelper=new NavigationHelper(this);
+		}
+		return navigatonHelper;
+		
+	}
+
+	public GroupHelper getGroupHelper(){
+		
+		if (groupHelper==null)
+		{
+			groupHelper=new GroupHelper(this);
+		}
+		return groupHelper;
+		
+	}
+
 	public ContactHelper getContactHelper(){
-		if (contactHelper == null){
-			contactHelper = new ContactHelper(this);
-			}
+		
+		if (contactHelper==null)
+		{
+			contactHelper=new ContactHelper(this);
+		}
 		return contactHelper;
 	}
 }
